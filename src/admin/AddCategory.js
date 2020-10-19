@@ -75,10 +75,10 @@ const AddCategory = () => {
         <Layout title="Add new category" description={`Welcome : ${user.name}`}>
             <div className="row">
                 <div className="col-md-8 offset-md-2">
+                    {goBack()}
                     {showSuccess()}
                     {showError()}
                     {newCategoryForm()}
-                    {goBack()}
                 </div>
             </div>
         </Layout>

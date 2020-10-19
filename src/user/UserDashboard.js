@@ -49,7 +49,7 @@ const Dashboard = () => {
 
 
     return (
-        <Layout title="User Dashboard" description={`Welcome : ${name}`}
+        <Layout title="User Dashboard" description={`Welcome : ${name.toUpperCase()}`}
             className="container-fluid">
             <div className="row">
                 <div className="col-3">

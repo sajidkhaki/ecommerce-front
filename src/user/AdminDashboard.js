@@ -36,7 +36,7 @@ const AdminDashboard = () => {
         )
     }
     return (
-        <Layout title="Admin Dashboard" description={`Welcome : ${name}`}
+        <Layout title="Admin Dashboard" description={`Welcome : ${name.toUpperCase()}`}
             className="container-fluid">
             <div className="row">
                 <div className="col-3">
