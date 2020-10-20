@@ -79,7 +79,7 @@ const Signin = () => {
                 return <Redirect to="/" />
         }
         return (
-                <Layout title="Sign In" description="Sign in to Node React E-commerce App"
+                <Layout title="Sign in" description="Sign in to Node React E-commerce App"
                         className="container col-md-8 offset-md-2" >
                         { showLoading()}
                         { showError()}
