@@ -1,10 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom'
+import { getBraintreeToken } from './ApiCore'
 import { isAuthenticated } from '../auth/index'
+import { useEffect } from 'react';
+import 'braintree-web'
+import DropIn from "braintree-web-drop-in-react";
 
 
 const Checkout = ({ products }) => {
 
+    const [data, setData] = useState({
+        success: false,
+        clientToken: null,
+        error: "",
+        instance: {},
+        address: ''
+    })
+
+    const userId = isAuthenticated() && isAuthenticated().user._id
+    const token = isAuthenticated() && isAuthenticated().token
+
+    const getToken = (userId, token) => {
+        getBraintreeToken(userId, token)
+            .then(data => {
+                console.log("response", data)
+                if (data.error) {
+                    setData({ ...data, error: data.error })
+                } else {
+                    setData({ ...data, clientToken: data.clientToken })
+                }
+            })
+    }
+
+    useEffect(() => {
+        getToken(userId, token)
+    }, [])
+    
     const getTotal = () => {
         return products.reduce((currentValue, nextValue) => {
             console.log("Reducer", currentValue)
@@ -12,11 +43,25 @@ const Checkout = ({ products }) => {
             return currentValue + nextValue.count * nextValue.price
         }, 0)
     }
-    
+
+    const showDropIn = () => (
+        <div>
+            {data.clientToken !== null && products.length > 0 ? (
+                <div>
+                    <DropIn options={{
+                        authorization: data.clientToken
+                    }} onInstance={instance => instance = instance} />
+                    <button className="btn btn-success">Pay</button>
+                </div>
+            ) : null}
+        </div>
+    )
+
     const showCheckout = () => {
         {
             return isAuthenticated() ? (
-                <button className="btn btn-success">Checkout</button>
+
+                <div>{showDropIn()}</div>
             )
                 : <Link to="/signin">
                     <button className="btn btn-primary">Sign In</button>
