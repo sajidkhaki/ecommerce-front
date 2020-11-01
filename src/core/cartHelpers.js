@@ -58,7 +58,7 @@ export const updateItem = (productId, count) => {
     let cart = []
     if (typeof window !== "undefined") {
         if (localStorage.getItem('cart')) {
-          cart =  JSON.parse(localStorage.getItem('cart'))
+            cart = JSON.parse(localStorage.getItem('cart'))
         }
         cart.map((product, i) => {
             if (product._id === productId)
@@ -82,3 +82,10 @@ export const removeCartItem = (productId) => {
     }
     return cart
 }
+
+export const emptyCart = next => {
+    if (typeof window !== 'undefined') {
+        localStorage.removeItem('cart');
+        next();
+    }
+};
