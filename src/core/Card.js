@@ -41,7 +41,7 @@ const Card = ({
         }
     }
     const showCartButton = (quantity, showAddToCartButton) => {
-        return product.sold < quantity && showAddToCartButton ? (
+        return quantity > 0 && showAddToCartButton ? (
             <button onClick={addToCart} className="btn btn-outline-warning mt-2 mb-2">
                 Add to cart
             </button>
@@ -90,8 +90,8 @@ const Card = ({
         );
     };
     const showStock = quantity => {
-        return product.sold < quantity ? (
-            <span className="badge badge-primary badge-pill">In Stock </span>
+        return quantity >0 ? (
+            <span className="badge badge-primary badge-pill">In Stock {product.quantity} </span>
         ) : (
                 <span className="badge badge-primary badge-pill">Out of Stock </span>
             );
