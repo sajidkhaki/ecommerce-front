@@ -3,12 +3,16 @@ import Layout from '../core/Layout'
 import { isAuthenticated } from '../auth/index'
 import { Link } from 'react-router-dom';
 import { addAdminCategory } from '../admin/apiAdmin'
+import { Toast } from 'react-bootstrap';
 
 const AddCategory = () => {
 
     const [name, setName] = useState('')
     const [error, setError] = useState(false)
     const [success, setSuccess] = useState(false)
+    const [toaster, setToaster] = useState(false)
+
+    const [showtoaster, setShowtoaster] = useState(true);
 
     // destruct user and token from local storage
 
@@ -18,30 +22,65 @@ const AddCategory = () => {
     const handleChange = e => {
         setError('')
         setSuccess('')
+        setToaster(false)
         setName(e.target.value)
     }
 
     const clickSubmit = event => {
         event.preventDefault()
-        setError('')
-        setSuccess(false)
-        // make request to API
-        addAdminCategory(user._id, token, { name })
-            .then(data => {
-                console.log("Response from server end", data)
-                if (data.error) {
-                    setError(true)
-                }
-                else {
-                    setError('')
-                    setSuccess(true)
-                }
-            })
+        setShowtoaster(true)
+        if (name.length > 2) {
+            setError('')
+            setSuccess(false)
+            // make request to API
+            addAdminCategory(user._id, token, { name })
+                .then(data => {
+                    console.log("Response from server end", data)
+                    if (data.error) {
+                        setError(true)
+                    }
+                    else {
+                        setError('')
+                        setSuccess(true)
+                    }
+                })
+        } else {
+            setToaster(true)
+        }
     }
 
     const showSuccess = () => {
         if (success) {
-            return <h3 className="text-success">{name} is created</h3>
+            // return <h3 className="text-success">{name} is created</h3>
+            return (
+                <Toast show={showtoaster} onClose={toggleShowToaster} delay={3000} autohide>
+                    <Toast.Header>
+                        <img src="holder.js/20x20?text=%20" className="rounded mr-2" alt="" />
+                        <strong className="mr-auto">Success</strong>
+                    </Toast.Header>
+                    <Toast.Body>{name} is created successfully</Toast.Body>
+                </Toast>
+            )
+        }
+    }
+    const toggleShowToaster = () => {
+        setShowtoaster(!showtoaster);
+        setError('')
+        setSuccess('')
+        setName('')
+    }
+
+    const showToaster = () => {
+        if (toaster) {
+            return (
+                <Toast show={showtoaster} onClose={toggleShowToaster} delay={3000} autohide>
+                    <Toast.Header>
+                        <img src="holder.js/20x20?text=%20" className="rounded mr-2" alt="" />
+                        <strong className="mr-auto">Error</strong>
+                    </Toast.Header>
+                    <Toast.Body>Category length should be greater than 2.</Toast.Body>
+                </Toast>
+            )
         }
     }
 
@@ -75,6 +114,7 @@ const AddCategory = () => {
         <Layout title="Add new category" description={`Welcome : ${user.name}`}>
             <div className="row">
                 <div className="col-md-8 offset-md-2">
+                    {showToaster()}
                     {goBack()}
                     {showSuccess()}
                     {showError()}
