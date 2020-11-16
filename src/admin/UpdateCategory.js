@@ -3,8 +3,7 @@ import Layout from '../core/Layout';
 import { isAuthenticated } from '../auth';
 import { Link, Redirect } from 'react-router-dom';
 import { getCategory, updateCategory } from './apiAdmin';
-// {category: ["5cd0258f2793ec6e100bc191"], price: []}
-// http://localhost:3000/admin/category/update/5cd0258f2793ec6e100bc191
+import swal from 'sweetalert';
 const UpdateCategory = ({ match }) => {
     const [values, setValues] = useState({
         name: '',
@@ -42,20 +41,31 @@ const UpdateCategory = ({ match }) => {
 
     const submitCategoryForm = e => {
         e.preventDefault();
-        // update with ? you should send category name otherwise what to update?
         const category = {
             name: name
         };
-        updateCategory(match.params.categoryId, user._id, token, category).then(data => {
-            if (data.error) {
-                setValues({ ...values, error: data.error });
-            } else {
-                setValues({
-                    ...values,
-                    name: data.name,
-                    error: false,
-                    redirectToProfile: true
+        swal({
+            title: "Warning",
+            text: "Are you sure you want to update the category ?",
+            icon: "info",
+            dangerMode: true,
+        }).then(willDelete => {
+            if (willDelete) {
+                updateCategory(match.params.categoryId, user._id, token, category).then(data => {
+                    if (data.error) {
+                        setValues({ ...values, error: data.error });
+                    } else {
+                        swal("Updated!", "Your category has been updated successfully!", "success")
+                        setValues({
+                            ...values,
+                            name: data.name,
+                            error: false,
+                            redirectToProfile: true
+                        });
+                    }
                 });
+            } else {
+                swal("cancelled!", "Operation cancelled!", "info")
             }
         });
     };
@@ -67,15 +77,10 @@ const UpdateCategory = ({ match }) => {
                 <span className="txt1 p-b-11">Category Name</span>
                 <br />
                 <br />
-                <div className="wrap-input100 validate-input m-b-36">
-                    <input
-                        onChange={handleChange('name')}
-                        value={name}
-                        className="input100"
-                        type="text"
-                        required
-                        name="name"
-                    />
+                <div className="form-group">
+                    <label className="text-muted">Category Name</label>
+                    <input onChange={handleChange('name')} type="text" name="name" className="form-control"
+                        value={name} autoFocus required />
                 </div>
                 <div className="w-size25">
                     <button type="submit" className="flex-c-m size2 bg1 bo-rad-23 hov1 m-text3 trans-0-4">

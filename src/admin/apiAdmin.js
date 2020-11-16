@@ -12,7 +12,6 @@ export const addAdminCategory = (userId, token, category) => {
         body: JSON.stringify(category)
     })
         .then(response => {
-            console.log("Response", response)
             return response.json()
         }).catch(err => {
             console.log("Error", err)
@@ -31,7 +30,6 @@ export const createProduct = (userId, token, product) => {
         body: product
     })
         .then(response => {
-            console.log("Response", response)
             return response.json()
         }).catch(err => {
             console.log("Error", err)
@@ -44,12 +42,26 @@ export const getCategories = () => {
         method: "GET",
     })
         .then(response => {
-            console.log("Response", response)
             return response.json()
         }).catch(err => {
             console.log("Error", err)
         })
 }
+
+export const deleteCategory = (categoryId, userId, token) => {
+    return fetch(`${API}/category/${categoryId}/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => console.log(err));
+};
 
 export const listOrders = (userId, token) => {
     return fetch(`${API}/order/list/${userId}`, {
@@ -91,7 +103,6 @@ export const updateOrderStatus = (userId, token, orderId, status) => {
         body: JSON.stringify({ status, orderId })
     })
         .then(response => {
-            console.log("Response of update status", response)
             return response.json();
         })
         .catch(err => console.log(err));
