@@ -5,8 +5,9 @@ import { signout } from '../auth/index'
 import { Link, Redirect } from 'react-router-dom';
 import { read, update, updateUser } from '../core/ApiUser';
 
-const Profile = ({ match }) => {
-    console.log("Params", match)
+
+const Profile = ({ match, history }) => {
+    console.log("history", history)
     const [values, setValues] = useState({
         name: '',
         email: '',
@@ -59,14 +60,19 @@ const Profile = ({ match }) => {
     };
 
     const redirectUser = success => {
-        // onClick = {() => signout(() => {
-        //     history.push("/")
-        // })}> Sign Out </span >
         if (success) {
             // signout(() => {
-            //     return <Redirect to="/" />;
+            //     history.push("/")
             // })
-            return <Redirect to="/cart" />;
+            // return (
+            //     <form>
+            //         <button onClick={() => signout(() => {
+            //             history.push("/")
+            //         })}>
+            //             Sign Out
+            //     </button>
+            //     </form>
+            // )
         }
     }
 
