@@ -40,6 +40,7 @@ const UpdateProduct = ({ match }) => {
 
     const init = productId => {
         getProduct(productId).then(data => {
+            console.log("get updated data", data)
             if (data.error) {
                 setValues({ ...values, error: data.error });
             } else {
@@ -82,10 +83,8 @@ const UpdateProduct = ({ match }) => {
     };
 
     const clickSubmit = event => {
-        console.log("form data update", event.target.value)
         event.preventDefault();
         setValues({ ...values, error: '', loading: true });
-
         updateProduct(match.params.productId, user._id, token, formData).then(data => {
             if (data.error) {
                 setValues({ ...values, error: data.error });
@@ -189,7 +188,7 @@ const UpdateProduct = ({ match }) => {
     };
 
     return (
-        <Layout title="Add a new product" description={`G'day ${user.name}, ready to add a new product?`}>
+        <Layout title="Update product" description={`G'day ${user.name}, ready to update a  product?`}>
             <div className="row">
                 <div className="col-md-8 offset-md-2">
                     {showLoading()}

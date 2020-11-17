@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../core/Layout'
 import { isAuthenticated } from '../auth/index'
 import { createProduct, getCategories } from '../admin/apiAdmin'
+import toaster from 'toasted-notes'
+// import 'toasted-notes/src/styles.css'; // optional styles
 
 
 const AddProduct = () => {
@@ -57,8 +59,8 @@ const AddProduct = () => {
 
 
     //useEffect(init(), [])
-
     const handleChange = (name) => event => {
+        setValues({ ...values, error: "" });
         const value = name === 'photo' ? event.target.files[0] : event.target.value;
         formData.set(name, value);
         setValues({ ...values, [name]: value });
@@ -68,14 +70,14 @@ const AddProduct = () => {
     const clickSubmit = event => {
         event.preventDefault();
         setValues({ ...values, error: '', loading: true });
-
         createProduct(user._id, token, formData).then(data => {
-
-            console.log("Product create Response", data)
-
+            console.log("Response from create product", data)
             if (data.error) {
                 setValues({ ...values, error: data.error });
             } else {
+                toaster.notify(`${data.name} is created successfully`, {
+                    duration: 2000
+                })
                 setValues({
                     ...values,
                     name: '',
@@ -86,6 +88,7 @@ const AddProduct = () => {
                     loading: false,
                     category: '',
                     shipping: '',
+                    error: '',
                     redirectToProfile: false,
                     createdProduct: data.name
                 });
@@ -155,11 +158,17 @@ const AddProduct = () => {
         </div>
     );
 
-    const showSuccess = () => (
-        <div className="alert alert-info" style={{ display: createdProduct ? '' : 'none' }}>
-            <h2>{`${createdProduct}`} is created!</h2>
-        </div>
-    );
+    const showSuccess = () => {
+        if (!error) {
+            toaster.notify(`${createdProduct}is created successfully`, {
+                duration: 2000
+            })
+        }
+        // <div className="alert alert-info" style={{ display: createdProduct ? '' : 'none' }}>
+        //     <h2>{`${createdProduct}`} is created!</h2>
+        // </div>
+
+    };
 
     const showLoading = () =>
         loading && (
@@ -176,7 +185,7 @@ const AddProduct = () => {
             <div className="row">
                 <div className="col-md-8 offset-md-2">
                     {showLoading()}
-                    {showSuccess()}
+                    {/* {showSuccess()} */}
                     {showError()}
                     {newPostForm()}
                 </div>
