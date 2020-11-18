@@ -18,6 +18,7 @@ import ManageProducts from '../admin/ManageProducts'
 import ManageCategories from '../admin/ManageCategory'
 import UpdateProduct from '../admin/UpdateProduct';
 import UpdateCategory from '../admin/UpdateCategory';
+import sessionExpired from '../user/sessionExpired'
 
 
 
@@ -30,6 +31,7 @@ const Routes = () => {
                 <Route path="/cart" exact component={Cart} />
                 <Route path="/signin" exact component={Signin} />
                 <Route path="/signup" exact component={Signup} />
+                <Route path="/sessionExpired" exact component={sessionExpired} />
 
                 <PrivateRoute path="/user/dashboard" exact component={Dashboard} />
                 <PrivateRoute path="/profile/:userId" exact component={Profile} />

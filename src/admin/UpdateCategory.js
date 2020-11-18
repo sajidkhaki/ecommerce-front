@@ -79,8 +79,7 @@ const UpdateCategory = ({ match }) => {
         if (redirection) {
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('jwt') // Remove token from local storage
-                swal("warning!", "Session Timeoout!!!! Invalid Authorization!", "info")
-                return <Redirect to="/" />
+                return <Redirect to="/sessionExpired" />
             }
         }
     }
