@@ -4,10 +4,11 @@ import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
 import { getCategories, deleteCategory } from "./apiAdmin";
 import swal from 'sweetalert';
+import { Redirect } from 'react-router-dom'
 
 const ManageCategory = () => {
     const [category, setCategory] = useState([]);
-
+    const [redirection, setRedirect] = useState(false);
     const { user, token } = isAuthenticated();
 
     const loadCategories = () => {
@@ -29,9 +30,13 @@ const ManageCategory = () => {
         }).then(willDelete => {
             if (willDelete) {
                 deleteCategory(categoryId, user._id, token).then(data => {
-                    if (data.error) {
+                    if (data.error && data.code) {
+                        setRedirect(true)
+                    }
+                    else if (data.error) {
                         console.log(data.error);
-                    } else {
+                    }
+                    else {
                         swal("Updated!", "Your category has been deleted successfully!", "success")
                         loadCategories();
                     }
@@ -46,6 +51,17 @@ const ManageCategory = () => {
         loadCategories();
     }, []);
 
+
+    const redirectUser = () => {
+        if (redirection) {
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('jwt') // Remove token from local storage
+                //alert("session timeout")
+                swal("warning!", "Session Timeoout!!!! Invalid Authorization!", "info")
+                return <Redirect to="/signin" />
+            }
+        }
+    }
     return (
         <Layout
             title="Manage Categries"
@@ -55,6 +71,7 @@ const ManageCategory = () => {
             <div className="row">
                 <div className="col-12">
                     <h2 className="text-center">
+                        {redirectUser()}
                         Total {category.length} Categories
                     </h2>
                     <hr />

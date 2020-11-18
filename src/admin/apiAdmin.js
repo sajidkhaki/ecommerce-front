@@ -7,7 +7,8 @@ export const addAdminCategory = (userId, token, category) => {
         headers: {
             Accept: 'application/json',
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token' : token,
         },
         body: JSON.stringify(category)
     })
@@ -25,7 +26,8 @@ export const createProduct = (userId, token, product) => {
         method: "POST",
         headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         },
         body: product
     })
@@ -54,7 +56,8 @@ export const deleteCategory = (categoryId, userId, token) => {
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         }
     })
         .then(response => {
@@ -68,7 +71,8 @@ export const listOrders = (userId, token) => {
         method: "GET",
         headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         },
     })
         .then(response => {
@@ -83,7 +87,8 @@ export const getStatusValues = (userId, token) => {
         method: 'GET',
         headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         }
     })
         .then(response => {
@@ -133,7 +138,8 @@ export const deleteProduct = (productId, userId, token) => {
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         }
     })
         .then(response => {
@@ -157,7 +163,8 @@ export const updateProduct = (productId, userId, token, product) => {
         method: 'PUT',
         headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         },
         body: product
     })
@@ -184,7 +191,8 @@ export const updateCategory = (categoryId, userId, token, category) => {
             // content type?
             'Content-Type': 'application/json',
             Accept: 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         },
         body: JSON.stringify(category)
     })

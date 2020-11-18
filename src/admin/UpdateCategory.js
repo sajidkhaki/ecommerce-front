@@ -4,6 +4,7 @@ import { isAuthenticated } from '../auth';
 import { Link, Redirect } from 'react-router-dom';
 import { getCategory, updateCategory } from './apiAdmin';
 import swal from 'sweetalert';
+
 const UpdateCategory = ({ match }) => {
     const [values, setValues] = useState({
         name: '',
@@ -11,11 +12,11 @@ const UpdateCategory = ({ match }) => {
         redirectToProfile: false,
         formData: ''
     });
-
     // destructure user and token from localStorage
     const { user, token } = isAuthenticated();
 
     const { name, error, redirectToProfile } = values;
+    const [redirection, setRedirect] = useState(false);
 
     const init = categoryId => {
         getCategory(categoryId, token).then(data => {
@@ -52,7 +53,10 @@ const UpdateCategory = ({ match }) => {
         }).then(willDelete => {
             if (willDelete) {
                 updateCategory(match.params.categoryId, user._id, token, category).then(data => {
-                    if (data.error) {
+                    if (data.error && data.code) {
+                        setRedirect(true)
+                    }
+                    else if (data.error) {
                         setValues({ ...values, error: data.error });
                     } else {
                         swal("Updated!", "Your category has been updated successfully!", "success")
@@ -70,6 +74,16 @@ const UpdateCategory = ({ match }) => {
         });
     };
 
+
+    const redirectUserAuth = () => {
+        if (redirection) {
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('jwt') // Remove token from local storage
+                swal("warning!", "Session Timeoout!!!! Invalid Authorization!", "info")
+                return <Redirect to="/" />
+            }
+        }
+    }
     const updateCategoryForm = () => (
         <div className="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
             <form className="mb-5" onSubmit={submitCategoryForm}>
@@ -130,6 +144,7 @@ const UpdateCategory = ({ match }) => {
                     {updateCategoryForm()}
                     {goBackBTN()}
                     {redirectUser()}
+                    {redirectUserAuth()}
                 </div>
             </div>
         </Layout>

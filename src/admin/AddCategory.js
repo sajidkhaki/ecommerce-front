@@ -4,15 +4,16 @@ import { isAuthenticated } from '../auth/index'
 import { Link } from 'react-router-dom';
 import { addAdminCategory } from '../admin/apiAdmin'
 import { Toast } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom'
 
 const AddCategory = () => {
 
     const [name, setName] = useState('')
-    const [error, setError] = useState(false)
+    const [error, setError] = useState('')
     const [success, setSuccess] = useState(false)
     const [toaster, setToaster] = useState(false)
-
     const [showtoaster, setShowtoaster] = useState(true);
+    const [redirection, setRedirect] = useState(false);
 
     // destruct user and token from local storage
 
@@ -22,7 +23,7 @@ const AddCategory = () => {
     const handleChange = e => {
         setError('')
         setSuccess('')
-        setToaster(false)
+        setToaster('')
         setName(e.target.value)
     }
 
@@ -35,23 +36,29 @@ const AddCategory = () => {
             // make request to API
             addAdminCategory(user._id, token, { name })
                 .then(data => {
-                    console.log("Response from server end", data)
-                    if (data.error) {
-                        setError(true)
+                    if (data.error && data.code) {
+                        setRedirect(true)
                     }
-                    else {
+                    else if (data.error) {
+                        setToaster(data.error)
+                        setRedirect(false)
+                    } else {
                         setError('')
                         setSuccess(true)
+                        setRedirect(false)
                     }
+                }).catch((error) => {
+                    console.log("error", error)
+                    setRedirect(false)
                 })
         } else {
             setToaster(true)
+            setToaster('Length should be greater than 2')
         }
     }
 
     const showSuccess = () => {
         if (success) {
-            // return <h3 className="text-success">{name} is created</h3>
             return (
                 <Toast show={showtoaster} onClose={toggleShowToaster} delay={3000} autohide>
                     <Toast.Header>
@@ -78,23 +85,26 @@ const AddCategory = () => {
                         <img src="holder.js/20x20?text=%20" className="rounded mr-2" alt="" />
                         <strong className="mr-auto">Error</strong>
                     </Toast.Header>
-                    <Toast.Body>Category length should be greater than 2.</Toast.Body>
+                    <Toast.Body>{toaster}</Toast.Body>
                 </Toast>
             )
         }
     }
-
-    const showError = () => {
-        if (error) {
-            return <h3 className="text-danger">Category {name} should be unique</h3>
-        }
-    }
-
     const goBack = () => (
         <div className="mt-5">
             <Link to="/admin/dashboard" className="text-warning">Dashboard</Link>
         </div>
     )
+
+    const redirectUser = () => {
+        if (redirection) {
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('jwt') // Remove token from local storage
+                alert("Session Timeoout!!!! Invalid Authorization")
+                return <Redirect to="/" />
+            }
+        }
+    }
 
 
     const newCategoryForm = () => (
@@ -115,9 +125,11 @@ const AddCategory = () => {
             <div className="row">
                 <div className="col-md-8 offset-md-2">
                     {showToaster()}
+                    {/*  {showAuthToaster()} */}
                     {goBack()}
+                    {redirectUser()}
                     {showSuccess()}
-                    {showError()}
+                    {/* {showError()} */}
                     {newCategoryForm()}
                 </div>
             </div>
