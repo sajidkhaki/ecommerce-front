@@ -6,7 +6,7 @@ import { isAuthenticated } from '../auth/index'
 import { useEffect } from 'react';
 import 'braintree-web'
 import DropIn from "braintree-web-drop-in-react";
-
+import { Redirect } from 'react-router-dom'
 
 const Checkout = ({ products, setRun = f => f, run = undefined }) => {
 
@@ -20,6 +20,7 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
         instance: {},
         address: ''
     })
+    const [redirection, setRedirect] = useState(false);
 
     const userId = isAuthenticated() && isAuthenticated().user._id
     const token = isAuthenticated() && isAuthenticated().token
@@ -28,14 +29,16 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
         getBraintreeToken(userId, token)
             .then(data => {
                 console.log("response", data)
-                if (data.error) {
+                if (data.error && data.code) {
+                    setRedirect(true)
+                }
+                else if (data.error) {
                     setData({ ...data, error: data.error })
                 } else {
                     setData({ clientToken: data.clientToken })
                 }
             })
     }
-
     useEffect(() => {
         getToken(userId, token)
     }, [])
@@ -50,6 +53,16 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
     const handleAddress = event => {
         setData({ ...data, address: event.target.value });
     };
+
+
+    const redirectUser = () => {
+        if (redirection) {
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('jwt') // Remove token from local storage
+                return <Redirect to="/sessionExpired" />
+            }
+        }
+    }
 
     let deliveryAddress = data.address;
 
@@ -172,6 +185,7 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
             {showSuccess(data.success)}
             {showError(data.error)}
             {showCheckout()}
+            {redirectUser()}
         </div>
     )
 }

@@ -88,6 +88,7 @@ export const getBraintreeToken = (userId, token) => {
             Accept: 'application/json',
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         },
     })
         .then(response => {
@@ -104,7 +105,8 @@ export const processPayment = (userId, token, paymentData) => {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         },
         body: JSON.stringify(paymentData)
     })
@@ -120,7 +122,8 @@ export const createOrder = (userId, token, createOrderData) => {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'x-access-token': token,
         },
         body: JSON.stringify({ order: createOrderData })
     })

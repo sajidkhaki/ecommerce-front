@@ -4,8 +4,6 @@ import { signout, isAuthenticated } from '../auth/index'
 import { itemTotal } from './cartHelpers'
 
 const isActive = (history, path) => {
-    /*     console.log('path', path)
-        console.log('History', history) */
     if (history.location.pathname === path) {
         return { color: '#ff9900' }
     } else {

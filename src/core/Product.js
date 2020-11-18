@@ -11,6 +11,7 @@ const Product = props => {
 
     const loadSingleProduct = productId => {
         read(productId).then(data => {
+            console.log("data of single product", data)
             if (data.error) {
                 setError(data.error);
             } else {
