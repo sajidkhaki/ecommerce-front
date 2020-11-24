@@ -96,7 +96,6 @@ const Card = ({
                 <span className="badge badge-primary badge-pill">Out of Stock </span>
             );
     };
-
     return (
         <div className="card">
             <div className="card-header name">{product.name}</div>

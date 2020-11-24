@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../core/Layout'
 import { listOrders, getStatusValues, updateOrderStatus } from './apiAdmin';
-import Card from '../core/Card'
 import { isAuthenticated } from '../auth/index'
 import moment from "moment";
 
